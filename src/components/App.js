@@ -3,10 +3,10 @@ import React from 'react'
 
 const App = () => {
   // const startContract = async () => {
-  //   const m = await import ('/home/lana/Documents/frontend/donat-pool-offchain/output');
-  //   console.log(m)
-  //   m.main().test();
-  //   console.log('start contract 2')
+    // const m = await import ('/home/lana/Documents/frontend/donat-pool-offchain/output');
+    // console.log(m)
+    // m.main().test();
+    // console.log('start contract 2')
   // };
   return (
     <div><button>
