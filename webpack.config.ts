@@ -1,9 +1,8 @@
 import path from 'path';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
-import { Configuration, ContextReplacementPlugin, DefinePlugin, ProvidePlugin } from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import NodePolyfillWebpackPlugin from "node-polyfill-webpack-plugin";
+import CopyPlugin from 'copy-webpack-plugin'
 import 'webpack-dev-server';
 
 const isProduction = process.env.NODE_ENV == 'production';
@@ -12,9 +11,12 @@ const stylesHandler = isProduction
   ? MiniCssExtractPlugin.loader
   : 'style-loader';
 
-const config: Configuration = {
+const config = {
   mode: isProduction ? 'production' : 'development',
-  entry: path.resolve(__dirname, 'src/index.tsx'),
+  entry: {
+    offchain: './node_modules/offchain/dist/index.js',
+    ui: path.resolve(__dirname, 'src/index.tsx',)
+  },
   target: 'web',
   devtool: 'eval-source-map',
   output: {
@@ -22,11 +24,6 @@ const config: Configuration = {
   },
 
   stats: { errorDetails: true },
-
-  experiments: {
-    syncWebAssembly: true,
-    topLevelAwait: true,
-  },
 
   devServer: {
     open: true,
@@ -50,18 +47,18 @@ const config: Configuration = {
   },
 
   plugins: [
-    new DefinePlugin({
-      BROWSER_RUNTIME: !!process.env.BROWSER_RUNTIME,
-    }),
-    new NodePolyfillWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: 'index.html',
-    }),
-    new ProvidePlugin({
-      Buffer: ["buffer", "Buffer"],
-    }),
-    new ContextReplacementPlugin(/cardano-serialization-lib-browser/),
-    new ContextReplacementPlugin(/cardano-serialization-lib-nodejs/),
+    template: './index.html',
+    inject: 'body',
+  }),
+  new CopyPlugin({
+    patterns: [
+      {
+        from: 'node_modules/offchain/dist/',
+        to: path.resolve(__dirname, 'dist'),
+      },
+    ],
+  }),
   ].filter(Boolean),
   
 
@@ -97,33 +94,7 @@ const config: Configuration = {
   },
 
   resolve: {
-    modules: [process.env.NODE_PATH],
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
-    fallback: {
-      buffer: require.resolve("buffer/"),
-      http: false,
-      url: false,
-      stream: false,
-      crypto: false,
-      https: false,
-      net: false,
-      tls: false,
-      zlib: false,
-      os: false,
-      path: false,
-      fs: false,
-      readline: false,
-      child_process: false,
-    },
-    alias: {
-      Scripts: path.resolve(__dirname, "../scripts"),
-    },
-    plugins: [
-      new TsconfigPathsPlugin({
-        configFile: './tsconfig.json',
-        extensions: ['.tsx', '.ts', '.jsx', '.js'],
-      }),
-    ],
   },
 };
 
