@@ -28,7 +28,8 @@
       "@offchain/*": [
         "output/*"
       ],
-    }
+    },
+    "strictNullChecks": true
   },
   "ts-node": {
     "compilerOptions": {
@@ -36,6 +37,10 @@
     }
   },
   "include": [
+    "src/**/*",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
     "webpack",
     "ui"
   ],
@@ -43,6 +48,5 @@
     "node_modules",
     "tmp",
     "output",
-    "src"
   ]
 }
