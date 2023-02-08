@@ -16,7 +16,7 @@ const App = (): ReactElement => {
   return (
     <div>
       <h1>Offchain integration</h1>
-      <button onClick={() => offchain?.getProtocolInfo(console.log)}>
+      <button onClick={() => offchain?.connectWallet(console.log)}>
         Connect wallet
       </button>
     </div>
