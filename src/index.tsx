@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react';
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 declare global {
   interface  Window {
-     offchain: any;
+    offchain: any;
   }
 }
 const App = () => {
-  const [offchain, setOffchain] = useState()
+  const [offchain, setOffchain] = useState<Window["offchain"]>()
   useEffect(()=>{
     window.offchain.then(setOffchain)
   },[])
@@ -17,7 +17,7 @@ const App = () => {
   return (
     <div>
       <h1>Offchain integration</h1>
-      <button onClick={()=>offchain?.connectWallet()}>Connect wallet</button>
+      <button onClick={()=>offchain?.getProtocolInfo(console.log)}>Connect wallet</button>
     </div>
   )
 }
