@@ -1,11 +1,10 @@
-import path from 'path';
-import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import CopyPlugin from 'copy-webpack-plugin'
+import path from 'path';
 import 'webpack-dev-server';
 
-const isProduction = process.env.NODE_ENV == 'production';
+const isProduction = process.env.NODE_ENV === 'production';
 
 const stylesHandler = isProduction
   ? MiniCssExtractPlugin.loader
@@ -15,7 +14,7 @@ const config = {
   mode: isProduction ? 'production' : 'development',
   entry: {
     offchain: './node_modules/offchain/dist/index.js',
-    ui: path.resolve(__dirname, 'src/index.tsx',)
+    ui: path.resolve(__dirname, 'src/index.tsx'),
   },
   target: 'web',
   devtool: 'eval-source-map',
@@ -36,31 +35,30 @@ const config = {
       },
     },
     proxy: {
-      "/kupo": {
+      '/kupo': {
         // KUPO_HOST env variable must be set to the base URL of the Kupo
         // service, otherwise all requests to Kupo will fail.
-        target: process.env.KUPO_HOST || "http://localhost:1442",
+        target: process.env.KUPO_HOST ?? 'http://localhost:1442',
         changeOrigin: true,
-        pathRewrite: { "^/kupo": "" },
+        pathRewrite: { '^/kupo': '' },
       },
     },
   },
 
   plugins: [
     new HtmlWebpackPlugin({
-    template: './index.html',
-    inject: 'body',
-  }),
-  new CopyPlugin({
-    patterns: [
-      {
-        from: 'node_modules/offchain/dist/',
-        to: path.resolve(__dirname, 'dist'),
-      },
-    ],
-  }),
+      template: './index.html',
+      inject: 'body',
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: 'node_modules/offchain/dist/',
+          to: path.resolve(__dirname, 'dist'),
+        },
+      ],
+    }),
   ].filter(Boolean),
-  
 
   module: {
     rules: [
@@ -72,7 +70,11 @@ const config = {
             loader: 'babel-loader',
             options: {
               cacheDirectory: true,
-              presets: ['@babel/preset-env', ['@babel/preset-react', { runtime: 'automatic' }], '@babel/preset-typescript'],
+              presets: [
+                '@babel/preset-env',
+                ['@babel/preset-react', { runtime: 'automatic' }],
+                '@babel/preset-typescript',
+              ],
               plugins: ['@babel/plugin-transform-runtime'],
             },
           },
@@ -80,7 +82,7 @@ const config = {
       },
       {
         test: /\.plutus$/i,
-        type: "asset/source",
+        type: 'asset/source',
       },
       {
         test: /\.css$/i,
@@ -98,4 +100,4 @@ const config = {
   },
 };
 
-export default config
+export default config;
